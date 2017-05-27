@@ -5,9 +5,10 @@ var mongoose = require( 'mongoose' ),
     root     = __dirname,
     port     = process.env.PORT || 8000,
     app      = express();
+app.use( express.static( path.join( root, '../node_modules' )));
 app.use( express.static( path.join( root, '../client' )));
 app.use( express.static( path.join( root, '../bower_components' )));
-app.use( express.static( path.join( root, '../node_modules' )));
+
 app.use(bp.json());
 require('./config/mongoose.js')();
 require("./config/routes.js")(app);
