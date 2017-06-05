@@ -1,0 +1,9 @@
+.index-banner{
+  min-height: 250px;
+  line-height: 0;
+  height: auto;
+  background-color: transparent;
+}
+h1{
+	text-align: center;
+}

@@ -1,0 +1,16 @@
+html{
+	background: url('/assets/img/34.jpg') no-repeat center center fixed; 
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+}
+
+.mydp .selectedday .datevalue{
+	background-color: #DDD !important;
+}
+
+.mydp .selectedday{
+	background-color: #DDD !important;
+}
+

@@ -1,0 +1,42 @@
+
+  <!-- Modal Structure -->
+  <div id="schedulerModal" class="modal" materialize='modal' [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+    <div class="modal-content">
+
+
+	  <div class="navbar-fixed">
+	  	  <nav id='placeholder-navbar' role="navigation">
+		      <div class="nav-wrapper container">
+		      	<button type="button" class="back-btn" (click)="closeModal()">
+		      		<i class="material-icons">arrow_back</i>
+		      		<span>Back</span>
+		      	</button>
+		       </div>
+		  </nav>
+	  </div>
+
+
+	<div class="container">
+		<div class="row">
+			<div id=#calendar class="col m6">
+				<form #myForm="ngForm" novalidate>
+				    <my-date-picker name="mydate" [options]="myDatePickerOptions"
+				                    [(ngModel)]="model" (dateChanged)="onDateChanged($event)" required></my-date-picker>
+				</form>
+			</div>
+			<div class="availableTimes col m6">
+				<div class="collection">
+					<!-- ngFor each timeslot on given day-->
+			        <a href="#!" (click)="toggleHighlight(1);" [ngClass]="{'active': highlightedDiv === 1}" class="collection-item">4pm-5pm</a>
+			        <a href="#!" (click)="toggleHighlight(2);" [ngClass]="{'active': highlightedDiv === 2}" class="collection-item">5pm-6pm</a>
+			        <a href="#!" (click)="toggleHighlight(3);" [ngClass]="{'active': highlightedDiv === 3}" class="collection-item">6pm-7pm</a>
+			        <a href="#!" (click)="toggleHighlight(4);" [ngClass]="{'active': highlightedDiv === 4}" class="collection-item">7pm-8pm</a>
+			    </div>
+			</div>
+
+
+  <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" data-target="authenticationModal">Submit</a>
+  </div>
+  </div>
+</div>
