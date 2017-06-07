@@ -16,6 +16,8 @@ import { PrivateLessonsDetailsComponent } from './private-lessons-details/privat
 import { FooterComponent } from './footer/footer.component';
 import { AuthenticationComponent } from './authentication/authentication.component';
 
+import {TimeslotService} from './services/timeslot.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +38,11 @@ import { AuthenticationComponent } from './authentication/authentication.compone
     MyDatePickerModule,
     routing
   ],
-  providers: [],
+  providers: [TimeslotService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
+
+

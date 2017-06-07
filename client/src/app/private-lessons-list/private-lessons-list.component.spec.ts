@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import {TimeslotService} from '../services/timeslot.service';
 import { PrivateLessonsListComponent } from './private-lessons-list.component';
 
 describe('PrivateLessonsListComponent', () => {

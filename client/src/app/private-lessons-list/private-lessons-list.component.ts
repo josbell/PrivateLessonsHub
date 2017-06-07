@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import {TimeslotService} from '../services/timeslot.service';
 
 @Component({
   selector: 'app-private-lessons-list',
@@ -6,10 +7,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./private-lessons-list.component.css']
 })
 export class PrivateLessonsListComponent implements OnInit {
+	timeslots:any[];
 
-  constructor() { }
+  constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {
+  }
+
+  updateTimeslots(){
+    this._timeslotService.getTimeslots()
+      .then( returnedTimeslots=>{
+        this.timeslots = returnedTimeslots;
+      })
+      .catch(err=>{console.log(err);});
   }
 
 }

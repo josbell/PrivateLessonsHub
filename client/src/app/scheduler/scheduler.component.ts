@@ -1,7 +1,8 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {MaterializeAction} from 'angular2-materialize';
-
+import {TimeslotService} from '../services/timeslot.service';
+import {Booking} from '../models/booking';
 
 @Component({
   selector: 'app-scheduler',
@@ -10,9 +11,10 @@ import {MaterializeAction} from 'angular2-materialize';
 })
 export class SchedulerComponent implements OnInit {
 	//model variables
-	timeSlotsForSelectedDay:any[];
-	timeSlots:any[];
-	timeSlotSelected:any;
+  timeslots:any[];
+  //@Output() updateTimeslots = new EventEmitter();
+	dateSlots:any[]=[];
+	selected:any;
 
 	//datepicker config
 	private myDatePickerOptions: IMyDpOptions = {
@@ -34,37 +36,69 @@ export class SchedulerComponent implements OnInit {
     //materialize Action variables
     modalActions = new EventEmitter<string|MaterializeAction>();
 
-  constructor() { }
+  constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {
+    this._timeslotService.getTimeslots()
+      .then( returnedTimeslots=>{
+        this.timeslots = returnedTimeslots;
+        this.initDateSlots();
+      })
+      .catch(err=>{
+        console.log(err);
+      });    
   }
+
+
+  initDateSlots(){
+    let today = new Date()
+    this.updateDateSlots(today);
+  }
+
+  updateDateSlots(date:Date){
+    this.dateSlots = [];
+    let dateString = date.toDateString();
+
+    this.timeslots.forEach((timeslot)=>{
+      let timeslotStartDay = new Date(timeslot.start).toDateString();
+      if(timeslotStartDay == dateString ){
+        this.dateSlots.push(timeslot)
+      }
+    })
+  };
 
   //datePicker Method
   onDateChanged(event){
-  	console.log('onDateChanged(): ', event.date, ' - jsdate: ', new Date(event.jsdate).toLocaleDateString(), ' - formatted: ', event.formatted, ' - epoc timestamp: ', event.epoc);
-  	console.log(this);
-        if(event.formatted !== '') {
-            this.selectedTextNormal = 'Formatted: ' + event.formatted + ' - epoc timestamp: ' + event.epoc;
-            this.border = '1px solid #CCC';
-            this.selectedDateNormal = event.formatted;
-        }
-        else {
-            this.selectedTextNormal = '';
-            this.border = 'none';
-        }
-
-  	return;
-  }
-
-//Materialize collection method to select time 
-toggleHighlight(newValue: number) {
-  if (this.highlightedDiv === newValue) {
+    let date = new Date(event.jsdate);
+    this.updateDateSlots(date);
     this.highlightedDiv = 0;
+    this.selected = '';
   }
-  else {
-    this.highlightedDiv = newValue;
+
+  //Materialize collection method to select time 
+  toggleHighlight(newValue: number) {
+    this.selected = this.dateSlots[newValue-1];
+
+    if (this.highlightedDiv === newValue) {
+      this.highlightedDiv = 0;
+    }
+    else {
+      this.highlightedDiv = newValue;
+    }
   }
-}
+
+  submit(){
+    let start = new Date(this.selected.start);
+    let end = new Date(this.selected.end);
+    let booking = new Booking(start, end);
+    this._timeslotService
+      .create(booking)
+      .then(()=>{this.selected=''})
+      .catch(err=>{
+        console.log('Server returned this error:', err)
+      });
+
+  }
 
 //Materialize modal related methods
 openModal() {

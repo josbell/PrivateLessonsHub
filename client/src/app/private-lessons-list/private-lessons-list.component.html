@@ -12,7 +12,7 @@
 				      <span class="card-title activator grey-text text-darken-4">Josbell Quiros<i class="material-icons right">more_vert</i></span>
 				    </div>
 				    <div class="card-action">
-          				<a href="#" data-target="schedulerModal">Book Now</a>
+          				<a href="#" data-target="schedulerModal" (click)='updateTimeslots()'>Book Now</a>
         			</div>
 				    <div class="card-reveal">
 				      <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
@@ -40,4 +40,5 @@
 		  </div>
 	</div>
 </div>
+<app-scheduler  (updateTimeslots)='updateTimeslots()'></app-scheduler>
 
