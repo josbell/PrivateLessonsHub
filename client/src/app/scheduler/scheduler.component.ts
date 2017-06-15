@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {MaterializeAction} from 'angular2-materialize';
 import {TimeslotService} from '../services/timeslot.service';
-import {Booking} from '../models/booking';
+import {Timeslot} from '../models/timeslot';
 
 @Component({
   selector: 'app-scheduler',
@@ -11,10 +11,10 @@ import {Booking} from '../models/booking';
 })
 export class SchedulerComponent implements OnInit {
 	//model variables
-  timeslots:any[];
+  timeslots:Timeslot[]=[];
   //@Output() updateTimeslots = new EventEmitter();
-	dateSlots:any[]=[];
-	selected:any;
+	dateSlots:Timeslot[]=[];
+	selected:Timeslot;
 
 	//datepicker config
 	private myDatePickerOptions: IMyDpOptions = {
@@ -39,14 +39,27 @@ export class SchedulerComponent implements OnInit {
   constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {
+    this.updateTimeslots();
+  }
+
+  updateTimeslots(){
     this._timeslotService.getTimeslots()
-      .then( returnedTimeslots=>{
-        this.timeslots = returnedTimeslots;
+      .then( data=>{
+        this.timeslotFactory(data);
         this.initDateSlots();
       })
       .catch(err=>{
         console.log(err);
-      });    
+      }); 
+  }
+
+  timeslotFactory(data){
+    for(let slot of data){
+      console.log(slot.id)
+      let newSlot = new Timeslot(slot.id, slot.start, slot.end)
+      this.timeslots.push(newSlot)
+    }
+    
   }
 
 
@@ -72,7 +85,7 @@ export class SchedulerComponent implements OnInit {
     let date = new Date(event.jsdate);
     this.updateDateSlots(date);
     this.highlightedDiv = 0;
-    this.selected = '';
+    this.selected = null;
   }
 
   //Materialize collection method to select time 
@@ -88,12 +101,13 @@ export class SchedulerComponent implements OnInit {
   }
 
   submit(){
-    let start = new Date(this.selected.start);
-    let end = new Date(this.selected.end);
-    let booking = new Booking(start, end);
-    this._timeslotService
-      .create(booking)
-      .then(()=>{this.selected=''})
+    this.selected.book() //Updates timeslot status to "Booked"
+    this._timeslotService //Calls service to update event to booked
+      .create(this.selected)
+      .then(()=>{
+        console.log('Booking Succesful');
+        this.updateTimeslots();
+        this.selected=null})
       .catch(err=>{
         console.log('Server returned this error:', err)
       });

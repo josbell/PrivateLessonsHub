@@ -16,7 +16,9 @@ export class TimeslotService {
   create(booking){
   	console.log("Server > POST '/booking")
   	return this._http.post('/booking',booking)
-  		.map(data=> data.json())
+  		.map(data=> {
+        console.log(data);
+        return data.json()})
   		.toPromise()
   			
   }
