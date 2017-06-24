@@ -27,7 +27,7 @@
 					<div class="availableTimes col m6">
 						<div class="collection">
 							<!-- ngFor each timeslot on given day-->
-					        <a href="#" 
+					        <a href='javascript:void(0)'
 					        	*ngFor='let timeslot of dateSlots; let i = index' 
 					        	(click)="toggleHighlight(i+1);"
 					        	[ngClass]="{'active': highlightedDiv === i+1}" 
@@ -41,10 +41,13 @@
 			</div>
 		  	<div class="modal-footer">
 		    	<a href="javascript:void(0)" 
-		    		class="modal-action modal-close waves-effect waves-green btn-flat" 
-		    		data-target="authenticationModal"
+		    		class="modal-action waves-effect waves-green btn-flat" 
 		    		(click)='submit()'>
-		    		Submit
+		    		Book
+		    	</a>
+		    	<a href="javascript:void(0)" 
+		    		class="modal-action modal-close waves-effect waves-green btn-flat">
+		    		Done
 		    	</a>
 		  	</div>
 

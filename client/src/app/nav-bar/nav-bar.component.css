@@ -3,8 +3,17 @@ nav .brand-logo {
   color: #444;
 }
 
+#profilePic{
+  margin: 7px 0;
+  height:50px;
+}
+
+#profilePicLink{
+  max-height: 64px;
+}
+
 p {
-  line-height: 2rem;
+  line-height: 2em;
 }
 
 .button-collapse {

@@ -3,6 +3,7 @@ export class Timeslot {
 	start:Date;
 	end:Date;
 	status:String;
+	booked_by:String;
 
 	constructor(id:String,start:Date,end:Date){
 		this.id = id;
@@ -11,7 +12,8 @@ export class Timeslot {
 		this.status = 'Open';
 	}
 
-	book(){
+	book(booked_by = ''){
 		this.status = 'Booked';
+		this.booked_by = booked_by;
 	}
 }

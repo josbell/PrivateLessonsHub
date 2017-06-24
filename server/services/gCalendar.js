@@ -8,6 +8,10 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
+//DB Var
+var mongoose = require('mongoose');
+var Instructor = mongoose.model('Instructor');
+
 
 module.exports = function(){
 
@@ -39,7 +43,8 @@ module.exports = function(){
         eventId:timeslot.id,
         sendNotifications:true,
         resource:{
-          summary:timeslot.status
+          summary:timeslot.status,
+          description:timeslot.booked_by
         }
       },function(err,response){
         if(err){
@@ -77,7 +82,7 @@ module.exports = function(){
       } else {
         console.log('Upcoming 100 events:');
         for (var i = 0; i < events.length; i++) {
-          console.log(event);
+          //console.log(event);
           var event = events[i];
           var start = event.start.dateTime || event.start.date;
           var end = event.end.dateTime || event.end.date;
@@ -122,20 +127,28 @@ module.exports = function(){
   var getToken = function(oauth2Client){
     return new Promise((resolve,reject)=>{
       console.log('getToken');
-      fs.readFile(TOKEN_PATH, function(err, token) {
-      if (err) {
-        //throw ;
-        getNewToken(oauth2Client,(newToken)=>{
-           oauth2Client.credentials = JSON.parse(newToken);
+      Instructor.findOne({name:'Josbell Quiros'},(err,instructor)=>{
+        if(err){
+          getNewToken(oauth2Client,(newToken)=>{
+            oauth2Client.credentials = newToken;
             resolve(oauth2Client);
-        });
-      }else{
-        oauth2Client.credentials = JSON.parse(token);
-         resolve(oauth2Client);
-      }
-      
+            console.log('This is what my newly returned token to be parsed looks like',newToken);
+              });
+        }else{
+          //Use token from DB
+           oauth2Client.credentials = {
+              acces_token:instructor.acces_token,
+              refresh_token:instructor.refresh_token,
+              token_type:instructor.token_type,
+              expiry_date:instructor.expiry_date
+           }
+           let expiration_date = new Date(instructor.expiry_date);
+           console.log(expiration_date);
+           console.log('Resolved Using Mongo credentials');
+           resolve(oauth2Client);
+        }
       });
-    })
+    });
   };
 
 
@@ -150,7 +163,7 @@ module.exports = function(){
    * @param {getEventsCallback} callback The callback to call with the authorized
    *     client.
    */
-  var getNewToken = function(oauth2Client) {
+  var getNewToken = function(oauth2Client,cb) {
 
     //**TO BE MOVED CLIENT SIDE LATER
     //FUTURE FLOW: 
@@ -182,7 +195,7 @@ module.exports = function(){
           return err;
         }
         storeToken(newToken);
-        return newToken;
+         cb(newToken);
       });
     });
   }
@@ -193,7 +206,15 @@ module.exports = function(){
    * @param {Object} token The token to store to disk.
    */
   var storeToken = function(token) {
-    console.log('Storing new Token')
+    console.log('Storing new Token', token);
+    var query = {'name':'Josbell Quiros'};
+    Instructor.update(query,token,{upsert:true, setDefaultsOnInsert:true},function(err){
+      if(err){
+        console.log('Issue saving user with token to DB');
+      }else{
+        console.log('Stored new token in MongoDB');
+      }
+    });
     try {
       fs.mkdirSync(TOKEN_DIR);
     } catch (err) {

@@ -3,6 +3,7 @@ var GCALENDAR = require('../services/gCalendar.js');
 module.exports={
     
 	index:function(req, res){
+		console.log('Timeslots Controller Index get call');
 		var gCal = new GCALENDAR()
 		gCal.getAuth()
 			.then(gCal.listEvents)

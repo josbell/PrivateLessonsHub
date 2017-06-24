@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {MaterializeAction} from 'angular2-materialize';
 import {TimeslotService} from '../services/timeslot.service';
+import {AuthService} from '../services/auth.service';
 import {Timeslot} from '../models/timeslot';
 
 @Component({
@@ -11,6 +12,7 @@ import {Timeslot} from '../models/timeslot';
 })
 export class SchedulerComponent implements OnInit {
 	//model variables
+  userProfile:any;
   timeslots:Timeslot[]=[];
   //@Output() updateTimeslots = new EventEmitter();
 	dateSlots:Timeslot[]=[];
@@ -36,13 +38,29 @@ export class SchedulerComponent implements OnInit {
     //materialize Action variables
     modalActions = new EventEmitter<string|MaterializeAction>();
 
-  constructor(private _timeslotService:TimeslotService) { }
+  constructor(
+    private _timeslotService:TimeslotService,
+    private _auth: AuthService
+    ) { }
 
   ngOnInit() {
+    console.log('scheduler init');
     this.updateTimeslots();
+
+    if (this._auth.userProfile) {
+      this.userProfile = this._auth.userProfile;
+      console.log(this.userProfile);
+    } else if(this._auth.isAuthenticated()) {
+      this._auth.getProfile((err, userProfile) => {
+        this.userProfile = userProfile;
+        console.log(this.userProfile);
+      });
+    }
+
   }
 
   updateTimeslots(){
+    console.log('updateTimeslots');
     this._timeslotService.getTimeslots()
       .then( data=>{
         this.timeslotFactory(data);
@@ -54,8 +72,8 @@ export class SchedulerComponent implements OnInit {
   }
 
   timeslotFactory(data){
+    this.timeslots = [];
     for(let slot of data){
-      console.log(slot.id)
       let newSlot = new Timeslot(slot.id, slot.start, slot.end)
       this.timeslots.push(newSlot)
     }
@@ -82,14 +100,19 @@ export class SchedulerComponent implements OnInit {
 
   //datePicker Method
   onDateChanged(event){
-    let date = new Date(event.jsdate);
-    this.updateDateSlots(date);
-    this.highlightedDiv = 0;
-    this.selected = null;
+    if(event.jsdate){
+      let date = new Date(event.jsdate);
+
+      this.updateDateSlots(date);
+      this.highlightedDiv = 0;
+      this.selected = null;
+    }
+    
   }
 
   //Materialize collection method to select time 
   toggleHighlight(newValue: number) {
+    console.log('toggleHighlight called');
     this.selected = this.dateSlots[newValue-1];
 
     if (this.highlightedDiv === newValue) {
@@ -101,17 +124,21 @@ export class SchedulerComponent implements OnInit {
   }
 
   submit(){
-    this.selected.book() //Updates timeslot status to "Booked"
-    this._timeslotService //Calls service to update event to booked
-      .create(this.selected)
-      .then(()=>{
-        console.log('Booking Succesful');
-        this.updateTimeslots();
-        this.selected=null})
-      .catch(err=>{
-        console.log('Server returned this error:', err)
-      });
-
+    if(this._auth.isAuthenticated()){
+      this.selected.book(this.userProfile.name) //Updates timeslot status to "Booked"
+      this._timeslotService //Calls service to update event to booked
+        .create(this.selected)
+        .then(()=>{
+          console.log('Booking Succesful');
+          this.highlightedDiv = 0;
+          this.updateTimeslots();
+          this.selected=null})
+        .catch(err=>{
+          console.log('Server returned this error:', err)
+        });
+    }else{
+      this._auth.login()
+    }
   }
 
 //Materialize modal related methods

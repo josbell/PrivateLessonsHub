@@ -10,13 +10,14 @@ import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { HeroComponent } from './hero/hero.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
-import { PrivateLessonsComponent } from './private-lessons/private-lessons.component';
 import { PrivateLessonsListComponent } from './private-lessons-list/private-lessons-list.component';
 import { PrivateLessonsDetailsComponent } from './private-lessons-details/private-lessons-details.component';
 import { FooterComponent } from './footer/footer.component';
-import { AuthenticationComponent } from './authentication/authentication.component';
+import { CallbackComponent} from './callback/callback.component';
 
 import {TimeslotService} from './services/timeslot.service';
+import {AuthService} from './services/auth.service';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -24,11 +25,11 @@ import {TimeslotService} from './services/timeslot.service';
     NavBarComponent,
     HeroComponent,
     SchedulerComponent,
-    PrivateLessonsComponent,
     PrivateLessonsListComponent,
     PrivateLessonsDetailsComponent,
     FooterComponent,
-    AuthenticationComponent
+    CallbackComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -38,10 +39,11 @@ import {TimeslotService} from './services/timeslot.service';
     MyDatePickerModule,
     routing
   ],
-  providers: [TimeslotService],
-  bootstrap: [AppComponent]
+  providers: [TimeslotService, AuthService],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
+
 
 
 

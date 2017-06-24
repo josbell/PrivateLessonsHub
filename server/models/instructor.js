@@ -5,15 +5,23 @@ module.exports = function(){
 			type:String,
 			required:true
 		},
-		gCalSettings:{
-			gmail:{
-				type:String,
-				lowercase:true
-			}, //Validate gmail with exp*
-			gPassword:String,
-			token:String,
-			refreshToken:String
-		}
+		bookings:[
+			{
+				type:mongoose.Schema.Types.ObjectId,
+				ref:'Bookings'
+			}
+		],
+		gmail:{
+			type:String,
+			lowercase:true
+		}, //Validate gmail with exp*
+		calendarId:String,
+		gPassword:String,
+		access_token:String,
+		refresh_token:String,
+		token_type:String,
+		expiry_date:String,
+	
 	},{timestamps:true});
 
 	mongoose.model('Instructor',instructorSchema);

@@ -12,6 +12,7 @@ export class PrivateLessonsListComponent implements OnInit {
   constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {
+    console.log('private-lessons-list init');
   }
 
   updateTimeslots(){

@@ -9,7 +9,10 @@ export class TimeslotService {
 
   getTimeslots(){
   	return this._http.get('/timeslots')
-  		.map(data=> data.json())
+  		.map(data=> {
+        console.log(data);
+        return data.json();
+      })
   		.toPromise()
   }
 

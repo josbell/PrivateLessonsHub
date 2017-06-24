@@ -10,6 +10,7 @@ export class PrivateLessonsDetailsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  	console.log('private-lessons-list init');
   }
 
 }
