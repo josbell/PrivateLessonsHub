@@ -3,6 +3,8 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+
+
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
@@ -21,7 +23,6 @@ module.exports = function(){
   this.getAuth = function(){
      return getCredentials
               .then(authorize)
-              .then(getToken)
               .catch((err)=>{
                 console.log(err); 
               })
@@ -72,7 +73,7 @@ module.exports = function(){
       orderBy: 'startTime'
       }, function(err, response) {
       if (err) {
-        console.log('The API returned an error: ' + err);
+        console.log('The API returned an error when getting Events: ' + err);
         return;
       }
       var events = response.items;
@@ -97,6 +98,7 @@ module.exports = function(){
     });
   }
 
+
   // Load client secrets from a local file.
   var getCredentials = new Promise((resolve,reject)=>{
     fs.readFile('client_secret.json',(err,credentials)=>{
@@ -120,7 +122,7 @@ module.exports = function(){
       var redirectUrl = credentials.installed.redirect_uris[0];
       var auth = new googleAuth();
       var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-       resolve(oauth2Client)
+      resolve(oauth2Client)
     })
   }
 
@@ -129,11 +131,8 @@ module.exports = function(){
       console.log('getToken');
       Instructor.findOne({name:'Josbell Quiros'},(err,instructor)=>{
         if(err){
-          getNewToken(oauth2Client,(newToken)=>{
-            oauth2Client.credentials = newToken;
-            resolve(oauth2Client);
-            console.log('This is what my newly returned token to be parsed looks like',newToken);
-              });
+          console.log('Issue getting token', err);
+          return err;
         }else{
           //Use token from DB
            oauth2Client.credentials = {
@@ -163,42 +162,30 @@ module.exports = function(){
    * @param {getEventsCallback} callback The callback to call with the authorized
    *     client.
    */
-  var getNewToken = function(oauth2Client,cb) {
+  this.getNewToken = function(code) {
+    return new Promise((resolve,reject)=>{
+      var clientSecret = '';
+      var clientId = '';
+      var redirectUrl = '';
+      var auth = new googleAuth();
+      var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
-    //**TO BE MOVED CLIENT SIDE LATER
-    //FUTURE FLOW: 
-    //1. Client gets auth url and user signs in
-    //2. Client gets one time code from oauth
-    //3. Client sends one time code to server
-    //4. Server exchanges with oauth the one time code with access token
-    //5. Server confirms to oauth fully logged in
-    console.log('Getting new Token');
-    var authUrl = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES
-    });
-
-    //Redirect User to this URL 
-
-    console.log('Authorize this app by visiting this url: ', authUrl); 
-    var rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    //**
-    rl.question('Enter the code from that page here: ', function(code) {
-      rl.close();
-      oauth2Client.getToken(code, function(err, newToken) {
-        if (err) {
-          console.log('Error while trying to retrieve access newToken', err);
-          return err;
-        }
-        storeToken(newToken);
-         cb(newToken);
+        oauth2Client.getToken(code, function(err, newToken) {
+          if (err) {
+            console.log('Error while trying to retrieve access newToken', err);
+            return err;
+          }
+            console.log('Got new Token', newToken);
+            storeToken(newToken);
+            resolve(newToken);
+        });
       });
-    });
-  }
+//    });
+  };
+
+
+
+    
 
   /**
    * Store token to disk be used in later program executions.

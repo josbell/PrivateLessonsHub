@@ -3,6 +3,10 @@ nav .brand-logo {
   color: #444;
 }
 
+#signIn{
+  padding:0;
+}
+
 #profilePic{
   margin: 7px 0;
   height:50px;

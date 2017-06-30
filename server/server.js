@@ -13,7 +13,6 @@ var mongoose = require( 'mongoose' ),
 app.use(express.static(__dirname + '/../client/dist'));
 app.use( express.static( path.join( root, '../node_modules' )));
 app.use( express.static( path.join( root, '../bower_components' )));
-
 app.use(bp.json());
 require('./config/mongoose.js')();
 require("./config/routes.js")(app);

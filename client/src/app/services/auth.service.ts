@@ -17,7 +17,6 @@ export class AuthService {
 
   userProfile:any;
 
-
   constructor(public router: Router) {}
 
   public login(): void {
@@ -82,7 +81,10 @@ export class AuthService {
     // Check whether the current time is past the
     // access token's expiry time
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    console.log(new Date().getTime() < expiresAt);
     return new Date().getTime() < expiresAt;
   }
+
+  
 
 }

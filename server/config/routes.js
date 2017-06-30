@@ -9,7 +9,11 @@ module.exports = function(app){
 
 	app.post('/booking', function(req, res){
 		TimeSlots.create(req,res);
-	})
+	});
+
+	app.post('/storeauthcode', function(req,res){
+		TimeSlots.newToken(req,res);
+	});
 
 	app.get('*', function (req, res) {
     	res.sendFile(path.resolve('../client/dist/index.html'));

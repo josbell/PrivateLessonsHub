@@ -12,6 +12,15 @@
 					</div>
 				</nav>
 			</div>
+
+			<google-signin
+  				[clientId]="myClientId"
+				[scope]="myScope"
+				(googleSignInSuccess)="onGoogleSignInSuccess($event)">
+			</google-signin>
+
+			<button (click)='grantAccess()'>Grant Access</button>
+
 			<div class="row">
 				<form class="col s12">
 					<div class="row">

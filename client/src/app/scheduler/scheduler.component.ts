@@ -2,8 +2,10 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {MaterializeAction} from 'angular2-materialize';
 import {TimeslotService} from '../services/timeslot.service';
-import {AuthService} from '../services/auth.service';
 import {Timeslot} from '../models/timeslot';
+import {ChangeDetectorRef} from '@angular/core';
+import { GapiUserService } from '../services/gapi-user.service';
+
 
 @Component({
   selector: 'app-scheduler',
@@ -12,11 +14,12 @@ import {Timeslot} from '../models/timeslot';
 })
 export class SchedulerComponent implements OnInit {
 	//model variables
-  userProfile:any;
+  profile:any;
   timeslots:Timeslot[]=[];
   //@Output() updateTimeslots = new EventEmitter();
 	dateSlots:Timeslot[]=[];
 	selected:Timeslot;
+  private _subscription;
 
 	//datepicker config
 	private myDatePickerOptions: IMyDpOptions = {
@@ -38,23 +41,30 @@ export class SchedulerComponent implements OnInit {
     //materialize Action variables
     modalActions = new EventEmitter<string|MaterializeAction>();
 
-  constructor(
-    private _timeslotService:TimeslotService,
-    private _auth: AuthService
-    ) { }
+  constructor(private _timeslotService:TimeslotService,
+              public gapiService: GapiUserService, 
+              private ref: ChangeDetectorRef) 
+  {
+    this.profile = gapiService.userProfile;
+      console.log('constructing scheduling: Profile:', this.profile);
+      this._subscription = gapiService.authChange
+                            .subscribe((value)=>{
+                              this.profile = value;
+                              this.ref.detectChanges();
+                              console.log('Called Subscription: Profile:', this.profile);
+                            })
+  }
 
   ngOnInit() {
     console.log('scheduler init');
     this.updateTimeslots();
 
-    if (this._auth.userProfile) {
-      this.userProfile = this._auth.userProfile;
-      console.log(this.userProfile);
-    } else if(this._auth.isAuthenticated()) {
-      this._auth.getProfile((err, userProfile) => {
-        this.userProfile = userProfile;
-        console.log(this.userProfile);
-      });
+    if(this.gapiService.isUserSignedIn()){
+      this.profile = {
+        'name':localStorage.getItem('name'),
+        'email':localStorage.getItem('email'),
+        'imageUrl':localStorage.getItem('imageUrl')
+      }
     }
 
   }
@@ -124,9 +134,9 @@ export class SchedulerComponent implements OnInit {
   }
 
   submit(){
-    if(this._auth.isAuthenticated()){
-      this.selected.book(this.userProfile.name) //Updates timeslot status to "Booked"
-      this._timeslotService //Calls service to update event to booked
+    if(this.gapiService.isUserSignedIn()){
+      this.selected.book(this.profile.name) 
+      this._timeslotService 
         .create(this.selected)
         .then(()=>{
           console.log('Booking Succesful');
@@ -137,7 +147,7 @@ export class SchedulerComponent implements OnInit {
           console.log('Server returned this error:', err)
         });
     }else{
-      this._auth.login()
+      this.gapiService.signIn()
     }
   }
 
@@ -147,6 +157,6 @@ openModal() {
   }
   closeModal() {
     this.modalActions.emit({action:"modal",params:['close']});
-  }
+}
 
 }

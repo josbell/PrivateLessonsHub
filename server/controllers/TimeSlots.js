@@ -1,17 +1,21 @@
-var GCALENDAR = require('../services/gCalendar.js');
+//var GCALENDAR = require('../services/gCalendar.js');
 
 module.exports={
     
 	index:function(req, res){
+		/*
 		console.log('Timeslots Controller Index get call');
 		var gCal = new GCALENDAR()
 		gCal.getAuth()
+			.then(getToken)
 			.then(gCal.listEvents)
 			.then((timeslots)=>{
 				return res.json(timeslots)})
 			.catch((err)=>{
 				console.log(err)
 			});
+		*/
+		return res.json('');
 	},	
 
 	create:function(req,res){
@@ -24,6 +28,11 @@ module.exports={
  	 		})
  	 		.catch((err)=>res(err))
 		
+	},
+
+	newToken:function(req,res){
+		console.log(req);
+		res.json(req.body);
 	}
 
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {GoogleSignInSuccess} from 'angular-google-signin';
 
 @Component({
   selector: 'app-callback',

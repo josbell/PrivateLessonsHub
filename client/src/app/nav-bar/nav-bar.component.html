@@ -3,43 +3,34 @@
   <li><a href="javascript:void(0)">Profile</a></li>
   <li class="divider"></li>
   <li><a href="javascript:void(0)">Bookings</a></li>
+  <li><a href="javascript:void(0)" (click)='logout()'>Sign Out</a></li>
 </ul>
 
 <div class='navbar-fixed'>
   <nav class="white" role="navigation">
       <div class="nav-background">
           <div class="pattern active" style="background-image: url('http://placehold.it/1400x300');"></div>
-        </div>
+      </div>
       <div class="nav-wrapper container">
         <a id="logo-container" href="#" class="brand-logo">Latin Swag</a>
         <ul class="right hide-on-med-and-down">
-          <li *ngIf="profile && auth.isAuthenticated()">
-            <a  materialize="dropdown"
+          <li [hidden]="!profile">
+            <a  
+                materialize="dropdown"
                 id='profilePicLink'
                 class="dropdown-button" 
                 href="javascript:void(0)" 
                 data-activates="userDropdown">
-              <img id='profilePic' src="{{profile.picture}}" alt="https://www.ledr.com/colours/grey.htm" class="circle responsive-img">
+              <img *ngIf="profile" id='profilePic' src="{{profile.imageUrl}}"  class="circle responsive-img">
               <i class="material-icons right">arrow_drop_down</i>
             </a>
           </li>
-          <li>
-            <a href="javascript:void(0)" *ngIf="!auth.isAuthenticated()" (click)='auth.login()'>Log in</a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" *ngIf="auth.isAuthenticated()" (click)='auth.logout()'>Log out</a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" data-target="adminModal" *ngIf="isAdmin()">Admin</a>
+          <li *ngIf='!profile'>
+            <a class="waves-effect waves-light" (click)='signIn()'>Log In</a>
           </li>
         </ul>
-
-        <ul id="nav-mobile" class="side-nav">
-          <li><a href="javascript:void(0)" (click)='auth.login()'>Log in</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" materialize='sideNav' class="button-collapse"><i class="material-icons">menu</i></a>
       </div>
+
   </nav>
 </div>
 
-<app-admin></app-admin>

@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { MaterializeModule } from "angular2-materialize";
 import { MyDatePickerModule } from 'mydatepicker';
 import {routing} from './app.routes';
+import { GoogleApiModule } from 'ng-gapi';
 
 import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
@@ -14,10 +15,13 @@ import { PrivateLessonsListComponent } from './private-lessons-list/private-less
 import { PrivateLessonsDetailsComponent } from './private-lessons-details/private-lessons-details.component';
 import { FooterComponent } from './footer/footer.component';
 import { CallbackComponent} from './callback/callback.component';
+import {GoogleSignInComponent} from 'angular-google-signin';
 
 import {TimeslotService} from './services/timeslot.service';
-import {AuthService} from './services/auth.service';
+import {GapiUserService} from './services/gapi-user.service';
+
 import { AdminComponent } from './admin/admin.component';
+import { PrivateLessonsComponent } from './private-lessons/private-lessons.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,9 @@ import { AdminComponent } from './admin/admin.component';
     PrivateLessonsDetailsComponent,
     FooterComponent,
     CallbackComponent,
-    AdminComponent
+    AdminComponent,
+    GoogleSignInComponent,
+    PrivateLessonsComponent
   ],
   imports: [
     BrowserModule,
@@ -37,9 +43,15 @@ import { AdminComponent } from './admin/admin.component';
     HttpModule,
     MaterializeModule,
     MyDatePickerModule,
-    routing
+    routing,
+    GoogleApiModule.setConfig(
+    {
+      clientId: '858301130072-q7kvdksh72udbd8kg23kkhijg4sju3dc.apps.googleusercontent.com',
+      discoveryDocs:[],
+      scope:'https://www.googleapis.com/auth/calendar'
+    }), 
   ],
-  providers: [TimeslotService, AuthService],
+  providers: [TimeslotService, GapiUserService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
