@@ -22,6 +22,9 @@ import {GapiUserService} from './services/gapi-user.service';
 
 import { AdminComponent } from './admin/admin.component';
 import { PrivateLessonsComponent } from './private-lessons/private-lessons.component';
+import { InstructorCardComponent } from './instructor-card/instructor-card.component';
+import { DaySelectedPipe } from './pipes/day-selected.pipe';
+import { BookingsComponent } from './bookings/bookings.component';
 
 @NgModule({
   declarations: [
@@ -35,8 +38,11 @@ import { PrivateLessonsComponent } from './private-lessons/private-lessons.compo
     CallbackComponent,
     AdminComponent,
     GoogleSignInComponent,
-    PrivateLessonsComponent
-  ],
+    PrivateLessonsComponent,
+    InstructorCardComponent,
+    DaySelectedPipe,
+    BookingsComponent  
+ ],
   imports: [
     BrowserModule,
     FormsModule,

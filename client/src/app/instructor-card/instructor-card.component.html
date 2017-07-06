@@ -1,0 +1,21 @@
+<!--Cards-->
+		<div class="card sticky-action">
+		    <div class="card-image waves-effect waves-block waves-light">
+		      <img class="activator" src="{{instructor.imageUrl}}">
+		    </div>
+		    <div class="card-content">
+		      <span class="card-title activator grey-text text-darken-4">{{instructor.name}}<i class="material-icons right">more_vert</i></span>
+		    </div>
+		    <div class="card-action">
+  				<a href='javascript:void(0)' (click)='fetchTimeslots()'>Book Now</a>
+			</div>
+		    <div class="card-reveal">
+		      <span class="card-title grey-text text-darken-4">Styles<i class="material-icons right">close</i></span>
+		      <ul>
+		      	<li>Dancehall</li>
+		      	<li>Bachata</li>
+		      	<li>Salsa</li>
+		      </ul>
+		    </div>
+		</div>
+		<app-scheduler  [instructor]='instructor' [profile]='profile' [open]='openChildModal' (resetModalStatus)='onChildModalOpen()'></app-scheduler>

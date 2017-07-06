@@ -1,7 +1,8 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input } from '@angular/core';
 import {MaterializeAction} from 'angular2-materialize';
-import {GoogleSignInSuccess} from 'angular-google-signin';
-
+import {TimeslotService} from '../services/timeslot.service';
+import { GapiUserService } from '../services/gapi-user.service';
+import { UserProfile } from '../models/userProfile';
 
 @Component({
   selector: 'app-admin',
@@ -9,40 +10,55 @@ import {GoogleSignInSuccess} from 'angular-google-signin';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  //materialize Action variables
-  modalActions = new EventEmitter<string|MaterializeAction>();
-  private myClientId: string = '858301130072-q7kvdksh72udbd8kg23kkhijg4sju3dc.apps.googleusercontent.com';
-  private myScope: string = 'https://www.googleapis.com/auth/calendar';
 
-  constructor() {}
+  @Input() profile:UserProfile;
+  calendarId:string;
+  authUrl:string ='';
+  modalActions = new EventEmitter<string|MaterializeAction>();
+
+  constructor(public gapiService: GapiUserService,
+              private timeslotService: TimeslotService) {}
 
   ngOnInit() {
-
   }
 
-  onGoogleSignInSuccess(event: GoogleSignInSuccess) {
-    let googleUser: gapi.auth2.GoogleUser = event.googleUser;
-    let id: string = googleUser.getId();
-    let profile: gapi.auth2.BasicProfile = googleUser.getBasicProfile();
-    console.log('ID: ' +
-      profile
-        .getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Profile: ', profile);
-
-    //gapi.auth2.getAuthInstance().grantOfflineAccess({scope:this.myScope}).then((response)=>{
-    //  console.log(response);
-   // })
+  getAuthUrl(){
+    let userData = {
+        'name':localStorage.getItem('name'),
+        'email':localStorage.getItem('email'),
+        'imageUrl':localStorage.getItem('imageUrl'),
+        'calendarId': this.calendarId || 'primary'
+      }
+    console.log('Admin getAuthUrl: userData',userData);
+    this.timeslotService
+      .getAuthUrl(userData)
+      .then(response=>{
+         this.authUrl=response.url
+         window.location.href = this.authUrl})
+      .catch(err=>{
+        console.log('Err fecthing authUrl',err);
+        alert('Something broke! Try again later');
+      });
   }
 
-  grantAccess(){
-    gapi.auth2.getAuthInstance().grantOfflineAccess({scope:this.myScope}).then((response)=>{
-      console.log(response);
-    })
+  submit(){
+    this.getAuthUrl();
+    console.log('Admin.ts getAuthUrl done', this.authUrl);
   }
 
 
+  submit2(){
+    this.gapiService
+      .getOfflineAccess()
+      .then(authCode=>{
+        this.profile.calendarId = this.calendarId;
+        authCode.profile = this.profile
+        return this.timeslotService.storeAuthCode(authCode)})
+      .then(response=>{
+        console.log('Nav Bar Component: server response: ',response);
+      })
+  }
 
-  //Materialize modal related methods
   openModal() {
     this.modalActions.emit({action:"modal",params:['open']});
   }

@@ -86,9 +86,9 @@ export class GapiUserService {
 
 
     public getOfflineAccess(){
-    	gapi.auth2.getAuthInstance().grantOfflineAccess({scope:this.myScope}).then((response)=>{
-      		console.log(response);
-      	});
+    	return gapi.auth2.getAuthInstance()
+                .grantOfflineAccess({scope:this.myScope})
+                .then();
     }
 
 }

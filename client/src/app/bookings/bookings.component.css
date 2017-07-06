@@ -1,0 +1,30 @@
+#bookingsModal{
+	max-height: 100%;
+	width: 100%;
+	top:0 !important;
+}
+
+
+#placeholder-navbar{
+	background-color: #8EA1AF;
+	top:0;
+	left: 0;
+	z-index: 3;
+
+	transition: background-color .3s;
+    transition-property: background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: initial;
+    transition-delay: initial;
+}
+
+.back-btn{
+	padding: 0;
+	border: none;
+	background-color: transparent;
+}
+
+#placeholder-navbar .back-btn i{
+	float: left;
+	margin-right: 10px;
+}

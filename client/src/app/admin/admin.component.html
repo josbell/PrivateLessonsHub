@@ -1,6 +1,6 @@
 <div>
 	<!-- Modal Structure -->
-	<div id="adminModal" class="modal" materialize='modal'  								[materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+	<div id="adminModal" class="modal" materialize='modal' [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
 		<div class="modal-content">
 			<div class="navbar-fixed">
 				<nav id='placeholder-navbar' role="navigation">
@@ -12,52 +12,14 @@
 					</div>
 				</nav>
 			</div>
-
-			<google-signin
-  				[clientId]="myClientId"
-				[scope]="myScope"
-				(googleSignInSuccess)="onGoogleSignInSuccess($event)">
-			</google-signin>
-
-			<button (click)='grantAccess()'>Grant Access</button>
-
+			<h4>Register as Instructor</h4>
+			<br>
 			<div class="row">
-				<form class="col s12">
+				<form materialize class="col s12" >
 					<div class="row">
 						<div class="input-field col s6">
-							<input placeholder="Placeholder" id="first_name" type="text" class="validate">
-							<label for="first_name">First Name</label>
-						</div>
-						<div class="input-field col s6">
-							<input id="last_name" type="text" class="validate">
-							<label for="last_name">Last Name</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<input disabled value="I am not editable" id="disabled" type="text" class="validate">
-							<label for="disabled">Disabled</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<input id="password" type="password" class="validate">
-							<label for="password">Password</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<input id="email" type="email" class="validate">
-							<label for="email">Email</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col s12">
-							This is an inline input field:
-							<div class="input-field inline">
-								<input id="email" type="email" class="validate">
-								<label for="email" data-error="wrong" data-success="right">Email</label>
-							</div>
+							<input [(ngModel)]='calendarId' name='calendarId' placeholder="Leave blank if using primary calendar" id="calendarId" type="text" class="validate">
+							<label for="calendarId">Google Calendar Id</label>
 						</div>
 					</div>
 				</form>
@@ -65,13 +27,13 @@
 			
 			<div class="modal-footer">
 				<a href="javascript:void(0)"
-					class="modal-action waves-effect waves-green btn-flat"
+					class="modal-action modal-close waves-effect waves-green btn-flat"
 					(click)='submit()'>
-					Add
+					Submit
 				</a>
 				<a href="javascript:void(0)"
 					class="modal-action modal-close waves-effect waves-green btn-flat">
-					Done
+					Cancel
 				</a>
 			</div>
 		</div>

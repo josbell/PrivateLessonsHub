@@ -1,14 +1,12 @@
 export class UserProfile {
-	id:String;
-	firstName:String;
-	lastName:String;
-	imageUrl:String;
-	email:String;
+	id:string;
+	name:string;
+	imageUrl:string;
+	email:string;
+	calendarId:string;
 
-	constructor(id:String,firstName:String,lastName:String, imageUrl:String,email:String ){
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
+	constructor(name:string, imageUrl:string,email:string ){
+		this.name = name;
 		this.imageUrl = imageUrl;
 		this.email = email;
 	}

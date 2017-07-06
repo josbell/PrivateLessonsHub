@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var Instructor = require('./instructor.js');
 module.exports = function(){
 	var bookingsSchema = new mongoose.Schema({
-		id:{
-			type:String,
-			required:true
-		},
 		_instructor:{
 			type:mongoose.Schema.Types.ObjectId, 
 			ref:'Instructor'
@@ -14,6 +10,8 @@ module.exports = function(){
 			type:mongoose.Schema.Types.ObjectId,
 			ref:'User'
 		},
+		cancelled:Boolean,
+		gCalEventId:String,
 		start:{
 			type:Date,
 			required:true

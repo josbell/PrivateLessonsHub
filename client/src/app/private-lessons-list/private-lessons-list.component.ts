@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {TimeslotService} from '../services/timeslot.service';
+import { Instructor } from '../models/instructor';
+import {Observable} from 'rxjs/Observable';
+import { UserProfile } from '../models/userProfile';
 
 @Component({
   selector: 'app-private-lessons-list',
@@ -7,20 +10,12 @@ import {TimeslotService} from '../services/timeslot.service';
   styleUrls: ['./private-lessons-list.component.css']
 })
 export class PrivateLessonsListComponent implements OnInit {
-	timeslots:any[];
-
+  @Input() profile:Observable<UserProfile>;
+  instructors: Observable<Instructor[]>;
   constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {
-    console.log('private-lessons-list init');
-  }
-
-  updateTimeslots(){
-    this._timeslotService.getTimeslots()
-      .then( returnedTimeslots=>{
-        this.timeslots = returnedTimeslots;
-      })
-      .catch(err=>{console.log(err);});
+    this.instructors = this._timeslotService.getInstructors();
   }
 
 }

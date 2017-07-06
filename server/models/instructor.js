@@ -11,12 +11,12 @@ module.exports = function(){
 				ref:'Bookings'
 			}
 		],
-		gmail:{
+		imageUrl:String,
+		email:{
 			type:String,
 			lowercase:true
 		}, //Validate gmail with exp*
 		calendarId:String,
-		gPassword:String,
 		access_token:String,
 		refresh_token:String,
 		token_type:String,

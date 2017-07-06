@@ -1,32 +1,12 @@
 <div class="container-fluid">
 	<div class="container">
-
-	  <!--Cards-->
-		<div class=row>
-			<div class='col sm12 m3'>
-				<div class="card sticky-action small ">
-				    <div class="card-image waves-effect waves-block waves-light">
-				      <img class="activator" src="/assets/img/josbell.jpg">
-				    </div>
-				    <div class="card-content">
-				      <span class="card-title activator grey-text text-darken-4">Josbell Quiros<i class="material-icons right">more_vert</i></span>
-				    </div>
-				    <div class="card-action">
-          				<a href="#" data-target="schedulerModal" (click)='updateTimeslots()'>Book Now</a>
-        			</div>
-				    <div class="card-reveal">
-				      <span class="card-title grey-text text-darken-4">Styles<i class="material-icons right">close</i></span>
-				      <ul>
-				      	<li>Dancehall</li>
-				      	<li>Bachata</li>
-				      	<li>Salsa</li>
-				      </ul>
-				    </div>
-				  </div>
-			  </div>
-		  </div>
+		<div class="row">
+			<div class='col sm12 m4' *ngFor='let instructor of instructors | async as instructors'>
+	  			<app-instructor-card [instructor]='instructor' [profile]='profile' ></app-instructor-card>
+	  		</div>
+	  	</div>
 	</div>
 </div>
-<app-scheduler></app-scheduler>
+
 
 

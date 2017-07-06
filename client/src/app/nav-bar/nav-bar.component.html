@@ -1,8 +1,8 @@
 <!-- Dropdown Structure -->
 <ul id="userDropdown" class="dropdown-content">
-  <li><a href="javascript:void(0)">Profile</a></li>
+  <li><a href="#" data-target="bookingsModal">Bookings</a></li>
+  <li><a href="#" data-target="adminModal">Admin</a></li>
   <li class="divider"></li>
-  <li><a href="javascript:void(0)">Bookings</a></li>
   <li><a href="javascript:void(0)" (click)='logout()'>Sign Out</a></li>
 </ul>
 
@@ -12,8 +12,8 @@
           <div class="pattern active" style="background-image: url('http://placehold.it/1400x300');"></div>
       </div>
       <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo">Latin Swag</a>
-        <ul class="right hide-on-med-and-down">
+        <a id="logo-container" href="#" class="brand-logo hide-on-small-only">Latin Swag</a>
+        <ul class="right">
           <li [hidden]="!profile">
             <a  
                 materialize="dropdown"
@@ -33,4 +33,5 @@
 
   </nav>
 </div>
-
+<app-admin [profile]='profile'></app-admin>
+<app-bookings [profile]='profile'></app-bookings>

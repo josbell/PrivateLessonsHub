@@ -3,8 +3,9 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
-
-
+var OAuth2 = google.auth.OAuth2;
+var Session = require('express-session');
+var plus = google.plus('v1');
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
@@ -33,23 +34,23 @@ module.exports = function(){
    *
    * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
    */
-  this.updateEvent = function(auth,timeslot){
+  this.bookEvent = function(auth,booking,calendarId,booked_by){
     return new Promise((resolve,reject)=>{
-      console.log('updateEvent: timslots ', timeslot);
+      console.log('updateEvent: booking ', booking);
       console.log('updateEvent: auth ',auth);
       var calendar = google.calendar('v3');
       calendar.events.patch({
         auth:auth,
-        calendarId:'6dgskptjd0rlhqtpglmvr8pj90@group.calendar.google.com',
-        eventId:timeslot.id,
+        calendarId:calendarId,
+        eventId:booking.gCalEventId,
         sendNotifications:true,
         resource:{
-          summary:timeslot.status,
-          description:timeslot.booked_by
+          summary:'Booked by ' + booked_by.name,
+          description:booked_by.email
         }
       },function(err,response){
         if(err){
-          console.log('The API returned an error: ' + err);
+          console.log('The API returned an error when updating event: ' + err);
           throw err;
         }else{
           console.log('successful',response);
@@ -59,13 +60,39 @@ module.exports = function(){
     })
   }
 
-  this.listEvents = function (auth) {
+  this.cancelEvent = function(auth,booking,calendarId){
+    return new Promise((resolve,reject)=>{
+      console.log('updateEvent: booking ', booking);
+      console.log('updateEvent: auth ',auth);
+      var calendar = google.calendar('v3');
+      calendar.events.patch({
+        auth:auth,
+        calendarId:calendarId,
+        eventId:booking.gCalEventId,
+        sendNotifications:true,
+        resource:{
+          summary:'Open',
+          description:''
+        }
+      },function(err,response){
+        if(err){
+          console.log('The API returned an error when updating event: ' + err);
+          throw err;
+        }else{
+          console.log('successful',response);
+          resolve(response)
+        }
+      })
+    })
+  }
+
+  this.listEvents = function (auth,calendarId) {
     return new Promise((resolve,response)=>{
       console.log('listEvents', auth);
       var calendar = google.calendar('v3');
       calendar.events.list({
       auth: auth,
-      calendarId: '6dgskptjd0rlhqtpglmvr8pj90@group.calendar.google.com',
+      calendarId:calendarId,
       timeMin: (new Date()).toISOString(),
       q:'Open',
       maxResults: 100,
@@ -91,9 +118,9 @@ module.exports = function(){
           var newTimeSlot = {id:id ,start:start, end:end, description:event.summary};
           timeSlots.push(newTimeSlot);
           //console.log('%s - %s', start, event.summary);
-        }
-        resolve(timeSlots);
+        } 
       }
+      resolve(timeSlots);
     });
     });
   }
@@ -126,28 +153,21 @@ module.exports = function(){
     })
   }
 
-  var getToken = function(oauth2Client){
+  this.getToken = function(instructor){
+    var oauth2Client = this.getOAuthClient();
     return new Promise((resolve,reject)=>{
       console.log('getToken');
-      Instructor.findOne({name:'Josbell Quiros'},(err,instructor)=>{
-        if(err){
-          console.log('Issue getting token', err);
-          return err;
-        }else{
-          //Use token from DB
-           oauth2Client.credentials = {
-              acces_token:instructor.acces_token,
-              refresh_token:instructor.refresh_token,
-              token_type:instructor.token_type,
-              expiry_date:instructor.expiry_date
-           }
-           let expiration_date = new Date(instructor.expiry_date);
-           console.log(expiration_date);
-           console.log('Resolved Using Mongo credentials');
-           resolve(oauth2Client);
-        }
-      });
-    });
+      oauth2Client.credentials = {
+        access_token:instructor.access_token,
+        refresh_token:instructor.refresh_token,
+        token_type:instructor.token_type,
+        expiry_date:instructor.expiry_date
+      }
+      let expiration_date = new Date(instructor.expiry_date);
+      console.log(expiration_date);
+      console.log('Resolved Using Mongo credentials');
+      resolve(oauth2Client);
+    })
   };
 
 
@@ -164,30 +184,46 @@ module.exports = function(){
    */
   this.getNewToken = function(code) {
     return new Promise((resolve,reject)=>{
-      var clientSecret = '';
-      var clientId = '';
-      var redirectUrl = '';
-      var auth = new googleAuth();
-      var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
-
-        oauth2Client.getToken(code, function(err, newToken) {
+      var oauth2Client = this.getOAuthClient();
+        console.log('oauth2Client , code:',oauth2Client,code);
+        oauth2Client.getToken(code, function(err, newTokens) {
           if (err) {
             console.log('Error while trying to retrieve access newToken', err);
             return err;
           }
-            console.log('Got new Token', newToken);
-            storeToken(newToken);
-            resolve(newToken);
+            console.log('Got new Token', newTokens);
+            resolve(newTokens);
         });
       });
-//    });
   };
 
+  this.fetchUserData = function(tokens){
+    var oauth2Client = getOAuthClient();
+    oauth2Client.setCredentials(tokens);
 
+  }
 
-    
+  this.getAuthUrl = function(userData) {
+    var oauth2Client = this.getOAuthClient();
+    // generate a url that asks permissions for Google+ and Google Calendar scopes
+    var scopes = ['https://www.googleapis.com/auth/calendar'];
+    var state = userData 
+    var url = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: scopes, // If you only need one scope you can pass it as string
+        state: encodeURIComponent(JSON.stringify(state)) 
+    });
+ 
+    return url;
+}
 
-  /**
+  this.getOAuthClient = function () {
+    const ClientSecret = 'NpkfXHPUhKbcI-u1NPoCmsWA';
+    const ClientId = '858301130072-q7kvdksh72udbd8kg23kkhijg4sju3dc.apps.googleusercontent.com';
+    const RedirectionUrl = 'http://localhost:8000/oauthCallback/';
+    return new OAuth2(ClientId ,  ClientSecret, RedirectionUrl);
+}
+   /**
    * Store token to disk be used in later program executions.
    *
    * @param {Object} token The token to store to disk.
@@ -202,15 +238,6 @@ module.exports = function(){
         console.log('Stored new token in MongoDB');
       }
     });
-    try {
-      fs.mkdirSync(TOKEN_DIR);
-    } catch (err) {
-      if (err.code != 'EEXIST') {
-        throw err;
-      }
-    }
-    fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-    console.log('Token stored to ' + TOKEN_PATH);
   }
 
 }
