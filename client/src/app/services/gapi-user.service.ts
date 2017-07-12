@@ -4,26 +4,29 @@ import * as _ from "lodash";
 import GoogleUser = gapi.auth2.GoogleUser;
 import 'rxjs/Rx';
 import {Subject} from 'rxjs/Subject';
+import { GapiCalendarService} from './gapi-calendar.service';
 
 @Injectable()
 export class GapiUserService {
-	public static readonly SESSION_STORAGE_KEY: string = 'accessToken';
     private user: GoogleUser;
-    private myScope = 'https://www.googleapis.com/auth/calendar';
     public userProfile:any;
     public authChange = new Subject<any>();
 
   	constructor(private googleAuth: GoogleAuthService) { }
 
+    ngOnInit(){
+        if(this.isUserSignedIn()){
+            this.signIn();
+        }
+    }
+
     public getToken(): string {
-        let token: string = localStorage.getItem(GapiUserService.SESSION_STORAGE_KEY);
+        let token: string = localStorage.getItem('access_token');
         if (!token) {
             throw new Error("no token set , authentication required");
         }
-        return localStorage.getItem(GapiUserService.SESSION_STORAGE_KEY);
+        return token;
     }
-
-    
 
     public signIn(): void {
         this.googleAuth.getAuth()
@@ -32,19 +35,19 @@ export class GapiUserService {
             });
     }
 
+    public logOut():void{
+
+    }
+
     public isUserSignedIn(): boolean {
-        return !_.isEmpty(localStorage.getItem(GapiUserService.SESSION_STORAGE_KEY));
+        return !_.isEmpty(localStorage.getItem('access_token'));
     }
 
 
     private signInSuccessHandler(res: GoogleUser) {
-    	console.log(res);
         this.user = res;
-        this.storeUserProfile(res);
       	this.storeAuthData(res.getAuthResponse(true));
-         sessionStorage.setItem(
-            GapiUserService.SESSION_STORAGE_KEY, res.getAuthResponse().access_token
-        );
+        this.storeUserProfile(res);
     }
 
     private storeUserProfile(user: GoogleUser){
@@ -63,17 +66,14 @@ export class GapiUserService {
     		'imageUrl': imageUrl
     	}
         this.authChange.next(this.userProfile);
-
-        console.log('gapi service: created userProfile', this.userProfile);
     }
 
     private storeAuthData(authResult): void {
 	    // Set the time that the access token will expire at
-	    console.log(authResult);
-	    const expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
-	    localStorage.setItem('access_token', authResult.accessToken);
-	    localStorage.setItem('id_token', authResult.idToken);
-	    localStorage.setItem('expires_at', expiresAt);
+	    const expiresAt = JSON.stringify((authResult.expires_in * 1000) + new Date().getTime());
+	    localStorage.setItem('access_token', authResult.access_token);
+	    localStorage.setItem('id_token', authResult.id_token);
+	    localStorage.setItem('expires_at', authResult.expires_at);
   }
 
     public isAuthenticated(): boolean {
@@ -81,14 +81,6 @@ export class GapiUserService {
         // access token's expiry time
         const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
         return new Date().getTime() < expiresAt;
-    }
-
-
-
-    public getOfflineAccess(){
-    	return gapi.auth2.getAuthInstance()
-                .grantOfflineAccess({scope:this.myScope})
-                .then();
     }
 
 }

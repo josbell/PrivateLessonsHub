@@ -30,7 +30,7 @@ module.exports = function(app){
 
 
 	app.post('/booking', function(req, res){
-		TimeSlots.create(req,res);
+		Bookings.create(req,res);
 	});
 
 	app.post('/storeauthcode', function(req,res){

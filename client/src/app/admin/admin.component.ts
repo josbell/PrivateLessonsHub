@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Input } from '@angular/core';
 import {MaterializeAction} from 'angular2-materialize';
 import {TimeslotService} from '../services/timeslot.service';
 import { GapiUserService } from '../services/gapi-user.service';
+import { GapiCalendarService } from '../services/gapi-calendar.service';
+
 import { UserProfile } from '../models/userProfile';
 
 @Component({
@@ -17,10 +19,10 @@ export class AdminComponent implements OnInit {
   modalActions = new EventEmitter<string|MaterializeAction>();
 
   constructor(public gapiService: GapiUserService,
-              private timeslotService: TimeslotService) {}
+              private timeslotService: TimeslotService,
+              private _calendarService: GapiCalendarService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   getAuthUrl(){
     let userData = {
@@ -29,7 +31,6 @@ export class AdminComponent implements OnInit {
         'imageUrl':localStorage.getItem('imageUrl'),
         'calendarId': this.calendarId || 'primary'
       }
-    console.log('Admin getAuthUrl: userData',userData);
     this.timeslotService
       .getAuthUrl(userData)
       .then(response=>{
@@ -43,20 +44,6 @@ export class AdminComponent implements OnInit {
 
   submit(){
     this.getAuthUrl();
-    console.log('Admin.ts getAuthUrl done', this.authUrl);
-  }
-
-
-  submit2(){
-    this.gapiService
-      .getOfflineAccess()
-      .then(authCode=>{
-        this.profile.calendarId = this.calendarId;
-        authCode.profile = this.profile
-        return this.timeslotService.storeAuthCode(authCode)})
-      .then(response=>{
-        console.log('Nav Bar Component: server response: ',response);
-      })
   }
 
   openModal() {

@@ -10,7 +10,10 @@ module.exports = function(){
 			type:mongoose.Schema.Types.ObjectId,
 			ref:'User'
 		},
-		cancelled:Boolean,
+		cancelled:{
+			type:Boolean,
+			default:false
+		},
 		gCalEventId:String,
 		start:{
 			type:Date,

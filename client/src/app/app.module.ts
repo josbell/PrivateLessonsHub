@@ -19,12 +19,14 @@ import {GoogleSignInComponent} from 'angular-google-signin';
 
 import {TimeslotService} from './services/timeslot.service';
 import {GapiUserService} from './services/gapi-user.service';
+import {GapiCalendarService} from './services/gapi-calendar.service';
 
 import { AdminComponent } from './admin/admin.component';
 import { PrivateLessonsComponent } from './private-lessons/private-lessons.component';
 import { InstructorCardComponent } from './instructor-card/instructor-card.component';
 import { DaySelectedPipe } from './pipes/day-selected.pipe';
 import { BookingsComponent } from './bookings/bookings.component';
+import { InstructorNamePipe } from './pipes/instructor-name.pipe';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { BookingsComponent } from './bookings/bookings.component';
     PrivateLessonsComponent,
     InstructorCardComponent,
     DaySelectedPipe,
-    BookingsComponent  
+    BookingsComponent,
+    InstructorNamePipe  
  ],
   imports: [
     BrowserModule,
@@ -53,11 +56,11 @@ import { BookingsComponent } from './bookings/bookings.component';
     GoogleApiModule.setConfig(
     {
       clientId: '858301130072-q7kvdksh72udbd8kg23kkhijg4sju3dc.apps.googleusercontent.com',
-      discoveryDocs:[],
+      discoveryDocs:["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
       scope:'https://www.googleapis.com/auth/calendar'
     }), 
   ],
-  providers: [TimeslotService, GapiUserService],
+  providers: [TimeslotService, GapiUserService, GapiCalendarService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

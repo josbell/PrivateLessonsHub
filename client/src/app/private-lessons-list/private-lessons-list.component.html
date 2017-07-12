@@ -1,9 +1,17 @@
 <div class="container-fluid">
 	<div class="container">
 		<div class="row">
-			<div class='col sm12 m4' *ngFor='let instructor of instructors | async as instructors'>
+		<div class="fixed-action-btn toolbar">
+		    <a class="btn-floating btn-large amber accent-4">
+		      <i class="material-icons">search</i>
+		    </a>
+		    <ul id='searchbar'>
+		      <li class="waves-effect waves-light"><input id="search" type="search" [(ngModel)]='filterName' name='filterName' required></li>
+		    </ul>
+		  </div>
+		<div class='col sm12 m3' *ngFor='let instructor of instructors | async | instructorName:filterName'>
 	  			<app-instructor-card [instructor]='instructor' [profile]='profile' ></app-instructor-card>
-	  		</div>
+	  	</div>
 	  	</div>
 	</div>
 </div>

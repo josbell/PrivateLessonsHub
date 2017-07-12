@@ -9,8 +9,6 @@ export class HeroComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  	console.log('hero init');
-  }
+  ngOnInit() { }
 
 }

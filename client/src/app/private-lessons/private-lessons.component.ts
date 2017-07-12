@@ -20,11 +20,14 @@ export class PrivateLessonsComponent implements OnInit {
                             .subscribe((value)=>{
                               this.profile = value;
                               this.ref.detectChanges();
-                              console.log('Called Subscription: Profile:', this.profile); })
-	}
+                            })
+	    }
 
   ngOnInit() {
-  	console.log('initializing private lessons');
+
+    if(this.gapiService.isAuthenticated() && !gapi.auth2){
+      this.gapiService.signIn();
+    }
   	if(this.gapiService.isUserSignedIn()){
       let name = localStorage.getItem('name'),
           imageUrl = localStorage.getItem('imageUrl'),
@@ -34,21 +37,26 @@ export class PrivateLessonsComponent implements OnInit {
   }
 
   onSignIn(){
-  	console.log('onSignIn called');
   	this.gapiService.signIn();
   }
 
   onLogOut(): void {
     // Remove tokens and expiry time from localStorage
-    let auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut()
-      .then(()=>{
-        localStorage.clear();
-        this.profile = null;
-        console.log('Img url', this.profile);
-        this.ref.detectChanges();
+    if(gapi.auth2){
+      let auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut()
+        .then(()=>{
+          this.clearLocalMemory();
+        })
+    }else{
+      this.clearLocalMemory;
+    }
+  }
 
-      })
+  clearLocalMemory(){
+    localStorage.clear();
+    this.profile = null;
+    this.ref.detectChanges();
   }
 
   ngOnDestroy(){

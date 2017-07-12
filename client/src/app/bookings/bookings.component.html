@@ -14,16 +14,31 @@
 				       </div>
 				  </nav>
 			  </div>
-
+			  	  <!-- Switch -->
+				  <div class="switch right-align">
+				  	<h6>Show Cancelled</h6>
+				    <label>
+				      Off
+				      <input [(ngModel)]='showCancelledFilter' name='showCancelledFilter' type="checkbox">
+				      <span class="lever"></span>
+				      On
+				    </label>
+				  </div>
 
 			  <!--- Bookings  -->
 			  <ul class="collection with-header">
 			  	<li class="collection-header"><h4>My Bookings</h4></li>
-			    <li class="collection-item avatar" *ngFor='let booking of _timeslotService.bookings | async'>
+
+			    <li class="collection-item avatar"  
+			    	*ngFor='let booking of (showCancelledFilter? _timeslotService.bookings : _timeslotService.filteredBookings ) | async'>
 			      <img src="{{booking.instructor.imageUrl}}" alt="" class="circle">
 			      <span class="title">{{booking.instructor.name}}</span>
-			      <p>{{booking.start | date:'medium'}} - {{booking.end  | date:'shortTime'}} <br>
-			      {{booking.cancelled?"Cancelled":"Booked"}}
+			      <p>
+			    	{{booking.start | date:'medium'}} - {{booking.end  | date:'shortTime'}} <br>
+			      	<span [ngClass]="{
+			    		'red-text lighten-5-text':booking.cancelled, 
+			    		'green-text lighten-5-text':!booking.cancelled
+			    	}">{{booking.cancelled?"Cancelled":"Booked"}}</span>
 			      </p>
 			      <a href="#" data-target='deleteWarningModal' (click)='cacheSelectedBooking(booking)' class="secondary-content">
 			      	<i class="material-icons">delete</i>

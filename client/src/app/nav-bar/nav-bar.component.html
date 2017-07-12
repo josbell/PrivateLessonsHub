@@ -1,9 +1,9 @@
 <!-- Dropdown Structure -->
 <ul id="userDropdown" class="dropdown-content">
-  <li><a href="#" data-target="bookingsModal">Bookings</a></li>
-  <li><a href="#" data-target="adminModal">Admin</a></li>
+  <li><a href="#" class="tooltipped" data-target="bookingsModal" materialize="tooltip" data-position='bottom' data-delay="50" data-tooltip="See private lessons you have booked">Bookings</a></li>
+  <li><a href="#" class="tooltipped" data-target="adminModal" materialize="tooltip" data-position='bottom' data-delay="50" data-tooltip="Register as an instructor and get booked" >Admin</a></li>
   <li class="divider"></li>
-  <li><a href="javascript:void(0)" (click)='logout()'>Sign Out</a></li>
+  <li><a href="javascript:void(0)" (click)='logout()'>Log Out</a></li>
 </ul>
 
 <div class='navbar-fixed'>
@@ -26,7 +26,7 @@
             </a>
           </li>
           <li *ngIf='!profile'>
-            <a class="waves-effect waves-light" (click)='signIn()'>Log In</a>
+            <a class="waves-effect waves-light tooltipped" class="tooltipped" materialize="tooltip" data-position='bottom' data-delay="50" data-tooltip="Log in with google credentials" (click)='signIn()'>Log In</a>
           </li>
         </ul>
       </div>

@@ -23,6 +23,8 @@
 						</form>
 					</div>
 					<div class="availableTimes col m6">
+						<h4 *ngIf='(_timeslotService.timeslots | async | daySelected:selectedDate)?.length>0'>Pick a Time</h4>
+						<h4 *ngIf='(_timeslotService.timeslots | async | daySelected:selectedDate)?.length==0'>Not available this day</h4>
 						<div class="collection" >
 							<!-- ngFor each timeslot on given day-->
 					        <a href='javascript:void(0)'
@@ -57,10 +59,11 @@
   <!-- Success Modal Structure -->
   <div id="successModal" class="modal" materialize='modal' [materializeParams]="[{dismissible: false}]" [materializeActions]="successModalActions">
     <div class="modal-content">
-      <p>Successfully Booked!!</p>
+      <p>{{successModalMsg}}</p>
     </div>
     <div class="modal-footer">
-      <a href="javascript:void(0)" class="modal-action modal-close waves-effect waves-green btn-flat">Ok</a>
+      <a href="javascript:void(0)" [ngClass]="{'disabled':successModalMsg=='Successfully added event to your calendar'}" class="modal-action waves-effect waves-green btn-flat" (click)='addEventToUserCal()'>Add Event to my calendar</a>
+      <a href="javascript:void(0)" class="modal-action waves-effect waves-green btn-flat" (click)='closeSuccessModal()'>Ok</a>
     </div>
   </div>
 

@@ -7,6 +7,8 @@ import {Observable} from 'rxjs/Observable';
 import { Instructor } from '../models/instructor';
 import { UserProfile } from '../models/userProfile';
 import { GapiUserService } from '../services/gapi-user.service';
+import { GapiCalendarService } from '../services/gapi-calendar.service';
+
 
 @Component({
   selector: 'app-scheduler',
@@ -26,20 +28,21 @@ export class SchedulerComponent implements OnInit {
   }
   selectedDate:Date = new Date()
 	selected:Timeslot;
-
+  previousBooked:Timeslot;
 	//datepicker config
 	private myDatePickerOptions: IMyDpOptions = {
         // other options...
         markCurrentDay: true,
         inline:true,
-        dateFormat: 'dd.mm.yyyy',
-    };
+        dateFormat: 'dd.mm.yyyy'
+};
   private model: Object = new Date();
   private selectedDateNormal:string = '';
   private selectedTextNormal: string = '';
   private border: string = 'none';
   private placeholder: string = 'Select date';
-  private disabled: boolean = false;
+  private disabled: boolean = true;
+
 
   //materialize collection variable
   highlightedDiv: number;
@@ -48,48 +51,22 @@ export class SchedulerComponent implements OnInit {
   modalActions = new EventEmitter<string|MaterializeAction>();
   successModalActions = new EventEmitter<string|MaterializeAction>();
   failureModalActions = new EventEmitter<string|MaterializeAction>();
+  successModalMsg = 'Successfully Booked!!';
 
   constructor(private _timeslotService:TimeslotService,
-              public gapiService: GapiUserService) { }
+              public gapiService: GapiUserService,
+              private _calendarService:GapiCalendarService) { }
 
-  ngOnInit() { 
-    console.log('scheduler init', this.instructor);
-    /*
-    this.profile.subscribe(val=>{
-      this.localProfile = val;
-    });
+  ngOnInit() { }
 
-    this.instructor.subscribe(val=>{
-      this.localInstructor = val;
-    })
-    */
-  }
-/*
-  updateTimeslots(){
-    console.log('updateTimeslots');
-    this._timeslotService.getTimeslots(this.instructor)
-      .then( data=>{
-        this.timeslotFactory(data);
-        this.initDateSlots();
-      })
-      .catch(err=>{
-        console.log(err);
-      }); 
-  }
-
-*/
-
-  //datePicker Method
   onDateChanged(event){
     if(event.jsdate){
       this.selectedDate = new Date(event.jsdate);
-     // this.updateDateSlots(date);
       this.highlightedDiv = 0;
       this.selected = null;
     }
     
   }
- 
 
   //Materialize collection method to select time 
   toggleHighlight(newValue: number,timeslot:Timeslot) {
@@ -104,8 +81,7 @@ export class SchedulerComponent implements OnInit {
   }
 
   submit(){
-    console.log(this.instructor, this.profile);
-    if(this.profile){
+    if(this.gapiService.isAuthenticated() && this.profile){
       this.book();
     }else{
       this.gapiService.signIn();
@@ -117,10 +93,10 @@ export class SchedulerComponent implements OnInit {
     this.selected.book(this.profile,this.instructor._id);
     this._timeslotService.create(this.selected)
       .then(response=>{
-        console.log('Booking Successful', response);
+        console.log('Booking Successful');
         this.highlightedDiv = 0;
         this._timeslotService.getTimeslots(this.instructor);
-        this.selected = null;
+        this._timeslotService.getBookings(this.profile);
         this.openSuccessModal();
       })
       .catch(err=>{
@@ -130,39 +106,32 @@ export class SchedulerComponent implements OnInit {
     
   }
 
-/*
-  submit(){
-    if(this.gapiService.isUserSignedIn()){
-      //this.selected.book(this.profile) 
-      this._timeslotService 
-        .create(this.selected)
-        .then(()=>{
-          console.log('Booking Succesful');
-          this.highlightedDiv = 0;
-          this.updateTimeslots();
-          this.selected=null})
-        .catch(err=>{
-          console.log('Server returned this error:', err)
-        });
-    }else{
-      this.gapiService.signIn()
-    }
-  }
-
-  */
+addEventToUserCal(){
+  this._calendarService.insertEvent(this.selected.start,this.selected.end, this.instructor).then(response=>{
+    this.successModalMsg = 'Successfully added event to your calendar';
+  });
+}
 
 //Materialize modal related methods
 openModal() {
     this.modalActions.emit({action:"modal",params:['open']});
 }
 closeModal() {
+    this.selected = null;
     this.modalActions.emit({action:"modal",params:['close']});
     this.resetModalStatus.emit();
 }
 openSuccessModal() {
-   this.successModalActions.emit({action:"modal",params:['open']});
+  this.successModalMsg = 'Successfully Booked!!'
+  this.successModalActions.emit({action:"modal",params:['open']});
+}
+closeSuccessModal(){
+  this.selected = null;
+  this.successModalActions.emit({action:"modal",params:['close']});
+
 }
 openFailureModal(){
+  this.selected = null;
   this.failureModalActions.emit({action:"modal",params:['open']});
 }
 

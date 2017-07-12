@@ -16,6 +16,7 @@ export class NavBarComponent implements OnInit {
   @Output() logOutEvent = new EventEmitter();
   public adminModalActions = new EventEmitter<string|MaterializeAction>();
   
+  
   constructor(public gapiService: GapiUserService, 
               private ref: ChangeDetectorRef) {}
 

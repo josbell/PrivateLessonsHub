@@ -4,5 +4,9 @@
 }
 
 .container{
-	padding-top: 5em;
+	padding-top: 1em;
+}
+
+#searchbar{
+	padding:0 10em;
 }

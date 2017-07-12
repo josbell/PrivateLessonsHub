@@ -12,6 +12,7 @@ import { UserProfile } from '../models/userProfile';
 export class PrivateLessonsListComponent implements OnInit {
   @Input() profile:Observable<UserProfile>;
   instructors: Observable<Instructor[]>;
+  public filterName = '';
   constructor(private _timeslotService:TimeslotService) { }
 
   ngOnInit() {

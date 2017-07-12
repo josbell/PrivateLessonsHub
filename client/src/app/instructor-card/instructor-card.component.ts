@@ -17,17 +17,9 @@ export class InstructorCardComponent implements OnInit {
 	//timeslots:Observable<Timeslot[]>;
 	dateSlots:Timeslot[]=[];
 
-  constructor(private _timeslotService:TimeslotService) {
-  //	let timeslotsSubscription = this._timeslotService.timeslots.subscribe(response=>{
-  //		console.log('Instructor Controller', response);
-  //	});
-  }
+  constructor(private _timeslotService:TimeslotService) { }
 
-  ngOnInit() {
-  	console.log('instructor card init', this.instructor);
-  	//let timeslots = this._timeslotService.timeslots;
-  	//timeslots.subscribe();
-  }
+  ngOnInit() { }
 
 
   fetchTimeslots(){
@@ -36,36 +28,7 @@ export class InstructorCardComponent implements OnInit {
   }
 
   onChildModalOpen(){
-  	console.log('onChildModalOpen called');
   	this.openChildModal = false;
   }
-
-/*
-  updateTimeslots(){
-    this.timeslots = this._timeslotService.getTimeslots(this.instructor);
-    this.timeslots.subscribe(()=>{
-    	console.log('Timeslots loaded for ', this.instructor);
-    });
-  }
-
-
-  initDateSlots(){
-    let today = new Date()
-    this.updateDateSlots(today);
-  }
-
-  updateDateSlots(date:Date){
-    this.dateSlots = [];
-    let dateString = date.toDateString();
-
-    this.timeslots.forEach((timeslot)=>{
-      let timeslotStartDay = new Date(timeslot.start).toDateString();
-      if(timeslotStartDay == dateString ){
-        this.dateSlots.push(timeslot)
-      }
-    })
-  };
-
-*/
 
 }

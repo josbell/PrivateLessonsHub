@@ -17,11 +17,11 @@ export class BookingsComponent implements OnInit {
   	@Input() 
   	set profile(userProfile){
   		if(userProfile){
-  			console.log('Bookings component calling profile input event',userProfile);
+        this._timeslotService.getBookings(userProfile);
   			this._profile = userProfile;
-  			this._timeslotService.getBookings(userProfile);
   		}	
   	}
+  public showCancelledFilter;
 
   constructor(private _timeslotService:TimeslotService) { }
 
@@ -41,10 +41,8 @@ export class BookingsComponent implements OnInit {
   }
 
   cancelSelectedBooking(){
-  	console.log(this.selectedBooking);
   	this._timeslotService.cancelBooking(this.selectedBooking)
   		.then(response=>{
-  			console.log(response);
   			this._timeslotService.getBookings(this._profile);
   		})
   }
