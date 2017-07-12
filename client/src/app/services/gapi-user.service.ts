@@ -8,11 +8,11 @@ import { GapiCalendarService} from './gapi-calendar.service';
 
 @Injectable()
 export class GapiUserService {
-    private user: GoogleUser;
+    public user: GoogleUser;
     public userProfile:any;
     public authChange = new Subject<any>();
 
-  	constructor(private googleAuth: GoogleAuthService) { }
+  	constructor(public googleAuth: GoogleAuthService) { }
 
     ngOnInit(){
         if(this.isUserSignedIn()){
@@ -44,13 +44,13 @@ export class GapiUserService {
     }
 
 
-    private signInSuccessHandler(res: GoogleUser) {
+    public signInSuccessHandler(res: GoogleUser) {
         this.user = res;
       	this.storeAuthData(res.getAuthResponse(true));
         this.storeUserProfile(res);
     }
 
-    private storeUserProfile(user: GoogleUser){
+    public storeUserProfile(user: GoogleUser){
     	let googleProfile = user.getBasicProfile();
         let name = googleProfile.getName(),
             email = googleProfile.getEmail(),
@@ -68,7 +68,7 @@ export class GapiUserService {
         this.authChange.next(this.userProfile);
     }
 
-    private storeAuthData(authResult): void {
+    public storeAuthData(authResult): void {
 	    // Set the time that the access token will expire at
 	    const expiresAt = JSON.stringify((authResult.expires_in * 1000) + new Date().getTime());
 	    localStorage.setItem('access_token', authResult.access_token);

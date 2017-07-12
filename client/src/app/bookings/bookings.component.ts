@@ -23,7 +23,7 @@ export class BookingsComponent implements OnInit {
   	}
   public showCancelledFilter;
 
-  constructor(private _timeslotService:TimeslotService) { }
+  constructor(public _timeslotService:TimeslotService) { }
 
   ngOnInit() {
 

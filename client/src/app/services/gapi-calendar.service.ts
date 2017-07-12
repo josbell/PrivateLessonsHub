@@ -12,10 +12,10 @@ import {asObservable} from "./asObservable";
 export class GapiCalendarService {
 
   constructor(
-  			private _userAuth: GapiUserService,
-  			private _http: Http) { }
+  			public _userAuth: GapiUserService,
+  			public _http: Http) { }
 
-  private _calendars:BehaviorSubject<any> = new BehaviorSubject([]);
+  public _calendars:BehaviorSubject<any> = new BehaviorSubject([]);
 
   get calendars() {
         return asObservable(this._calendars);

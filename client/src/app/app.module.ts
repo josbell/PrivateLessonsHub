@@ -15,7 +15,6 @@ import { PrivateLessonsListComponent } from './private-lessons-list/private-less
 import { PrivateLessonsDetailsComponent } from './private-lessons-details/private-lessons-details.component';
 import { FooterComponent } from './footer/footer.component';
 import { CallbackComponent} from './callback/callback.component';
-import {GoogleSignInComponent} from 'angular-google-signin';
 
 import {TimeslotService} from './services/timeslot.service';
 import {GapiUserService} from './services/gapi-user.service';
@@ -39,7 +38,6 @@ import { InstructorNamePipe } from './pipes/instructor-name.pipe';
     FooterComponent,
     CallbackComponent,
     AdminComponent,
-    GoogleSignInComponent,
     PrivateLessonsComponent,
     InstructorCardComponent,
     DaySelectedPipe,

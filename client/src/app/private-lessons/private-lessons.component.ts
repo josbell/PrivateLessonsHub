@@ -11,10 +11,10 @@ import {Observable} from 'rxjs/Observable';
 })
 export class PrivateLessonsComponent implements OnInit {
 	public profile:UserProfile;
-	private _subscription;
+	public _subscription;
 
   	constructor(public gapiService: GapiUserService, 
-              private ref: ChangeDetectorRef) {
+              public ref: ChangeDetectorRef) {
       this.profile = gapiService.userProfile;
       let _subscription = gapiService.authChange
                             .subscribe((value)=>{

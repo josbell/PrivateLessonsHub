@@ -18,7 +18,7 @@ export class NavBarComponent implements OnInit {
   
   
   constructor(public gapiService: GapiUserService, 
-              private ref: ChangeDetectorRef) {}
+              public ref: ChangeDetectorRef) {}
 
   ngOnInit() { 
   }

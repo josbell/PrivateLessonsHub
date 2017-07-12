@@ -19,8 +19,8 @@ export class AdminComponent implements OnInit {
   modalActions = new EventEmitter<string|MaterializeAction>();
 
   constructor(public gapiService: GapiUserService,
-              private timeslotService: TimeslotService,
-              private _calendarService: GapiCalendarService) {}
+              public timeslotService: TimeslotService,
+              public _calendarService: GapiCalendarService) {}
 
   ngOnInit() { }
 

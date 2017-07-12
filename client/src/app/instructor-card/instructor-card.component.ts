@@ -17,7 +17,7 @@ export class InstructorCardComponent implements OnInit {
 	//timeslots:Observable<Timeslot[]>;
 	dateSlots:Timeslot[]=[];
 
-  constructor(private _timeslotService:TimeslotService) { }
+  constructor(public _timeslotService:TimeslotService) { }
 
   ngOnInit() { }
 

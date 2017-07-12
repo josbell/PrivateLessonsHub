@@ -4,7 +4,6 @@ var mongoose = require( 'mongoose' ),
     path     = require( 'path' ),
     gcal	 = require('google-calendar'),
     q 		 = require('q'),
-    Session  = require('express-session'),
     root     = __dirname,
     port     = process.env.PORT || 8000,
     app      = express()
@@ -14,11 +13,6 @@ var mongoose = require( 'mongoose' ),
 app.use(express.static(__dirname + '/../client/dist'));
 app.use( express.static( path.join( root, '../node_modules' )));
 app.use( express.static( path.join( root, '../bower_components' )));
-app.use(Session({
-    secret: 'raysources-secret-19890913007',
-    resave: true,
-    saveUninitialized: true
-}));
 app.use(bp.json());
 require('./config/mongoose.js')();
 require("./config/routes.js")(app);

@@ -30,18 +30,18 @@ export class SchedulerComponent implements OnInit {
 	selected:Timeslot;
   previousBooked:Timeslot;
 	//datepicker config
-	private myDatePickerOptions: IMyDpOptions = {
+	public myDatePickerOptions: IMyDpOptions = {
         // other options...
         markCurrentDay: true,
         inline:true,
         dateFormat: 'dd.mm.yyyy'
 };
-  private model: Object = new Date();
-  private selectedDateNormal:string = '';
-  private selectedTextNormal: string = '';
-  private border: string = 'none';
-  private placeholder: string = 'Select date';
-  private disabled: boolean = true;
+  public model: Object = new Date();
+  public selectedDateNormal:string = '';
+  public selectedTextNormal: string = '';
+  public border: string = 'none';
+  public placeholder: string = 'Select date';
+  public disabled: boolean = true;
 
 
   //materialize collection variable
@@ -53,9 +53,9 @@ export class SchedulerComponent implements OnInit {
   failureModalActions = new EventEmitter<string|MaterializeAction>();
   successModalMsg = 'Successfully Booked!!';
 
-  constructor(private _timeslotService:TimeslotService,
+  constructor(public _timeslotService:TimeslotService,
               public gapiService: GapiUserService,
-              private _calendarService:GapiCalendarService) { }
+              public _calendarService:GapiCalendarService) { }
 
   ngOnInit() { }
 

@@ -16,11 +16,11 @@ import {Booking} from '../models/booking';
 @Injectable()
 export class TimeslotService {
 
-  private _timeslots:BehaviorSubject<Timeslot[]> = new BehaviorSubject([]);
-  private _bookings:BehaviorSubject<Booking[]> = new BehaviorSubject([]);
-  private _filteredBookings:BehaviorSubject<Booking[]> = new BehaviorSubject([]);
+  public _timeslots:BehaviorSubject<Timeslot[]> = new BehaviorSubject([]);
+  public _bookings:BehaviorSubject<Booking[]> = new BehaviorSubject([]);
+  public _filteredBookings:BehaviorSubject<Booking[]> = new BehaviorSubject([]);
 
-  constructor(private _http:Http) { }
+  constructor(public _http:Http) { }
 
   get timeslots() {
         return asObservable(this._timeslots);
