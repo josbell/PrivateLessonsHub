@@ -12,7 +12,7 @@
           <div class="pattern active" style="background-image: url('http://placehold.it/1400x300');"></div>
       </div>
       <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo hide-on-small-only">Latin Swag</a>
+        <a id="logo-container" href="#" class="brand-logo hide-on-small-only">Private Lessons Hub</a>
         <ul class="right">
           <li [hidden]="!profile">
             <a  
@@ -26,7 +26,7 @@
             </a>
           </li>
           <li *ngIf='!profile'>
-            <a class="waves-effect waves-light tooltipped" class="tooltipped" materialize="tooltip" data-position='bottom' data-delay="50" data-tooltip="Log in with google credentials" (click)='signIn()'>Log In</a>
+            <a class="waves-effect waves-light tooltipped" class="tooltipped" materialize="tooltip" data-position='bottom' data-delay="50" data-tooltip="Log in with google credentials" (click)='gapiService.signIn()'>Log In</a>
           </li>
         </ul>
       </div>

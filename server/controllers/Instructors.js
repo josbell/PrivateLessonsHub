@@ -20,9 +20,11 @@ module.exports={
 
 	authUrl:function(req,res){
 		let userData = req.body;
+		console.log('authUrl Controller: UserData:', userData);
 		gCal.getAuthUrl(userData)
 			.then(url=>{
 				if(url){
+					console.log('AuthUrl: Returning url:',url);
 					return res.json({'url':url});
 				}else{
 					console.log('Url not returned');
@@ -33,9 +35,12 @@ module.exports={
 
 	create:function(req,res){
 		var userData = JSON.parse(decodeURIComponent(req.query.state));
-	    var code = req.query.code; // the query param code
+	   	var code = req.query.code; // the query param code
+		console.log('Instructor Controller : create : userData : ',userData);
+		console.log('Instructor Controller : create : code : ',code);
 		gCal.getNewToken(code)
 			.then((newToken)=>{
+				console.log('Instructor Controller : create : newToken : ',newToken);
 				Object.assign(userData,newToken);
 				var query = {'email':userData.email};
 			    Instructor.update(query,userData,{upsert:true},function(err, raw){
@@ -48,7 +53,7 @@ module.exports={
 				res.redirect('/');
 			})
 			.catch(err=>{
-				console.log(err);
+				console.log('Instructor Controller : create : Error when getting new token, ',err);
 				res.redirect('/');
 			})
 	}

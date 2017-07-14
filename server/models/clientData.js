@@ -7,5 +7,5 @@ module.exports = function(){
 		redirectionUrl:String
 	},{timestamps:true});
 
-	mongoose.model('ApiCrendentials',apiCredentialsSchema);
+	mongoose.model('ApiCredentials',apiCredentialsSchema);
 }

@@ -12,6 +12,7 @@
     "googleapis": "^19.0.0",
     "mongodb": "^2.2.27",
     "mongoose": "^4.10.2",
+    "ng-gapi": "0.0.39",
     "nightmare": "^2.10.0",
     "nightmare-google-oauth2": "^0.2.2",
     "node": "^0.0.0",

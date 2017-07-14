@@ -4,7 +4,7 @@ var OAuth2 = google.auth.OAuth2;
 
 //DB Var
 var mongoose = require('mongoose');
-var Credentials = mongoose.model('ApiCrendentials');
+var Credentials = mongoose.model('ApiCredentials');
 
 module.exports = function(){
 
@@ -126,14 +126,28 @@ module.exports = function(){
   };
 
   this.getAuthUrl = function(userData) {
-    return this.getOAuthClient()
+   	//console.log('Services : getAuthUrl : userData : ',userData);
+    	return new Promise((resolve,reject)=>{
+	 this.getOAuthClient()
                 .then(oauth2Client=>{
-                  return generateAuthUrl(oauth2Client,userData);
-                });    
+		 // console.log('Services Hello : getAuthUrl : oauth2Client : ', oauth2Client);
+                 // console.log('Services : generateAuthUrl : oauth2Client,userData : ',oauth2oauth2Client,userData);
+     		  var scopes = ['https://www.googleapis.com/auth/calendar'];
+     		  var state = userData
+     		  var url = oauth2Client.generateAuthUrl({
+         		 access_type: 'offline',
+         		 scope: scopes,
+         		 state: encodeURIComponent(JSON.stringify(state))
+     		 });
+	     	 console.log('Services : generateAuthUrl : url : ', url);
+	     	 resolve(url);
+                });
+	})    
   }
 
-  var generateAuthUrl = function(oauth2Client,userData){
+  this.generateAuthUrl = function(oauth2Client,userData){
     return new Promise((resolve,reject)=>{
+      console.log('Services : generateAuthUrl : oauth2Client,userData : ',oauth2oauth2Client,userData);
       var scopes = ['https://www.googleapis.com/auth/calendar'];
       var state = userData 
       var url = oauth2Client.generateAuthUrl({
@@ -141,22 +155,40 @@ module.exports = function(){
           scope: scopes,
           state: encodeURIComponent(JSON.stringify(state)) 
       });
+      console.log('Services : generateAuthUrl : url : ', url);
       resolve(url);
     })
   };
 
   this.getOAuthClient = function () {
     return new Promise((resolve,reject)=>{
-      Credentials.findOne({'apiName':'google'},(err,credentials)=>{
+      let newCredentials = new Credentials({
+        "apiName" : "google",
+        "clientSecret" : "NpkfXHPUhKbcI-u1NPoCmsWA",
+        "clientId" : "858301130072-q7kvdksh72udbd8kg23kkhijg4sju3dc.apps.googleusercontent.com",
+        "redirectionUrl" : "http://www.privatelessonshub.com/oauthCallback/",
+      });
+/*
+      newCredentials.save(err=>{
+        if(err){
+          console.log('Issue saving credentials', err);
+        }
+      });
+
+*/	
+ 	Credentials.findOne({'apiName':'google'},(err,credentials)=>{
         if(err){
           console.log('Issue getting api config data from MongoDB',err);
           return err;
         }else{
-          console.log('Got credentials from DB');
-          ClientSecret = credentials.clientSecret;
+        //  console.log('Got credentials from DB',credentials);
+          ClientSecret =  credentials.clientSecret;
           ClientId = credentials.clientId,
           RedirectionUrl = credentials.redirectionUrl;
+        //  console.log('Services : getOAuthClient : credentials : ',credentials);
+        //  console.log('Services : getOAuthClient : ClienClientSercret, Clientid, RedirectionUrl : ',ClientSecret, ClientId, RedirectionUrl);
           let oauth2Client = new OAuth2(ClientId ,  ClientSecret, RedirectionUrl);
+	  console.log('Services : getOAuthClient : oauth2Client : ',oauth2Client);
           resolve(oauth2Client);
         }  
       })
